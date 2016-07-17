@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,8 +61,23 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch or(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+        HashMap<String,Integer> frequency = new HashMap<String,Integer>();
+        for (String url: map.keySet()) {
+        	Integer value = map.get(url);
+        	frequency.put(url, value);
+        }
+        
+        for (String url : that.map.keySet()) {
+        	if (frequency.containsKey(url)) {
+        		Integer value = map.get(url) + that.map.get(url);
+        		frequency.put(url, value);
+        	}
+        	else {
+        		frequency.put(url, that.map.get(url));
+        	}
+        }
+        
+		return new WikiSearch(frequency);
 	}
 	
 	/**
@@ -71,8 +87,18 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch and(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+		HashMap<String,Integer> frequency = new HashMap<String,Integer>();
+		
+		for (String url: map.keySet()) {
+        	Integer value = map.get(url);
+        	if (that.map.containsKey(url)) {
+        		Integer currentValue = map.get(url) + that.map.get(url);
+        		frequency.put(url, currentValue);
+        	}
+        	
+        }
+        
+		return new WikiSearch(frequency);
 	}
 	
 	/**
@@ -82,8 +108,20 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch minus(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+        HashMap<String,Integer> frequency = new HashMap<String,Integer>();
+        for (String url: map.keySet()) {
+        	Integer value = map.get(url);
+        	frequency.put(url, value);
+        }
+        
+        for (String url : that.map.keySet()) {
+        	if (frequency.containsKey(url)) {
+        		frequency.remove(url);
+        	}
+        	
+        }
+        
+		return new WikiSearch(frequency);
 	}
 	
 	/**
@@ -104,8 +142,14 @@ public class WikiSearch {
 	 * @return List of entries with URL and relevance.
 	 */
 	public List<Entry<String, Integer>> sort() {
-        // FILL THIS IN!
-		return null;
+        List<Entry<String,Integer>> entries = new ArrayList<Entry<String,Integer>>();
+        entries.addAll(map.entrySet());
+        Collections.sort(entries, new Comparator<Entry<String,Integer>>() {
+        	public int compare(Entry<String,Integer> first, Entry<String, Integer> second) {
+        		return first.getValue() - second.getValue();
+        	}
+        });
+		return entries;
 	}
 
 	/**
